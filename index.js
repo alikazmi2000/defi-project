@@ -1,5 +1,13 @@
 const express = require('express');
-const http = require('http');
+// const http = require('http');
+const http = require('https');
+const fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem')
+};
+
 // const socketIO = require('socket.io')
 const connect = require('./db');
 const userRoutes = require('./routes/userRoutes');
@@ -26,7 +34,7 @@ app.get('/api', (req, res) => {
 });
 app.use('/users', userRoutes);
 
-const server = http.createServer(app);
+const server = http.createServer(options,app);
 
 const socketIO = require('socket.io')(server, {
   cors: {
