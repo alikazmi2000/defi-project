@@ -1,12 +1,18 @@
 const express = require('express');
 const http = require('http');
 // const socketIO = require('socket.io')
+const connect = require('./db');
+const userRoutes = require('./routes/userRoutes');
+const bodyParser = require('body-parser')
 
 const { setupSocket } = require('./socket');
 const cors = require('cors');
 
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
+
+connect();
 // allow requests from any origin
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +24,8 @@ app.get('/api', (req, res) => {
     message: 'Hello world',
   });
 });
+app.use('/users', userRoutes);
+
 const server = http.createServer(app);
 
 const socketIO = require('socket.io')(server, {
